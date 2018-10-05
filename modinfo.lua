@@ -1,8 +1,8 @@
-name = "Fast Travel"
+name = "Fast Travel (with ui)"
 description = "Build a fast travel network and travel instantly from sign post to sign post."
 
-author = "Isosurface"
-version = "1.1.0"
+author = "SoraYuki"
+version = "1.00"
 
 forumthread = ""
 
@@ -17,30 +17,27 @@ client_only_mod = false
 all_clients_require_mod = true
 server_filter_tags = {"fast travel"}
 
-priority = 0
+priority = 0.1
 
-configuration_options =
-{
-	{
+configuration_options = {
+    {
         name = "Travel_Cost",
         label = "Travel Cost",
-        options =
-        {
-            {description = "Very low", data = 128},
-            {description = "Low", data = 64},
-            {description = "Normal", data = 32},
-            {description = "High", data = 22.6}
+        options = {
+            {description = "X0.25", data = 128},
+            {description = "X0.5", data = 64},
+            {description = "X1.0", data = 32},
+            {description = "X1.5", data = 21.3}
         },
-        default = 32,
+        default = 32
     },
-	{
+    {
         name = "Ownership",
         label = "Ownership Restriction?",
-        options =
-        {
+        options = {
             {description = "Enable", data = true},
             {description = "Disable", data = false}
         },
-        default = false,
-    },
+        default = false
+    }
 }
