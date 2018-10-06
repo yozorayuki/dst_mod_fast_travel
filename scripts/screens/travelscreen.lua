@@ -92,19 +92,23 @@ function TravelScreen:LoadDests()
     local info_pack = self.attach.replica.travelable and self.attach.replica.travelable:GetDestInfos()
     self.dest_infos = {}
     for i, v in ipairs(string.split(info_pack, "\n")) do
-        local info = {}
-        info.index = i
-
         local elements = string.split(v, "\t")
-        if #elements == 3 then
-            info.name = elements[1]
-            info.cost_hunger = tonumber(elements[2])
-            info.cost_sanity = tonumber(elements[3])
+        if elements[1] == tostring(i) then
+            local info = {}
+            info.index = i
+            info.name = elements[2]
+            if info.name == "~nil" then
+                info.name = nil
+            end
+            info.cost_hunger = tonumber(elements[3]) or -1
+            info.cost_sanity = tonumber(elements[4]) or -1
+            table.insert(self.dest_infos, info)
         else
             print("data error:\n", info_pack)
+            self.isopen = true
+            self:OnCancel()
+            return
         end
-
-        table.insert(self.dest_infos, info)
     end
 
     self:RefreshDests()

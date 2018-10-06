@@ -161,8 +161,8 @@ end
 
 function Travelable:MakeInfos()
 	local infos = ""
-	for k, destination in ipairs(self.destinations) do
-		local name = destination.components.writeable and destination.components.writeable:GetText() or ""
+	for i, destination in ipairs(self.destinations) do
+		local name = destination.components.writeable and destination.components.writeable:GetText() or "~nil"
 		local cost_hunger = min_hunger_cost
 		local cost_sanity = 0
 		local xi, yi, zi = self.inst.Transform:GetWorldPosition()
@@ -182,7 +182,7 @@ function Travelable:MakeInfos()
 			cost_sanity = 0
 		end
 
-		infos = infos .. (infos == "" and "" or "\n") .. name .. "\t" .. cost_hunger .. "\t" .. cost_sanity
+		infos = infos .. (infos == "" and "" or "\n") .. i .. "\t" .. name .. "\t" .. cost_hunger .. "\t" .. cost_sanity
 	end
 	self.inst.replica.travelable:SetDestInfos(infos)
 end
