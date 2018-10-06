@@ -90,7 +90,7 @@ function Travelable:ListDestination(traveller)
 			if writeB == nil or writeB:GetText() == nil or writeB:GetText() == "" then
 				return true
 			end
-			return writeA:GetText() < writeB:GetText()
+			return string.lower(writeA:GetText()) < string.lower(writeB:GetText())
 		end
 	)
 
@@ -162,7 +162,7 @@ end
 function Travelable:MakeInfos()
 	local infos = ""
 	for k, destination in ipairs(self.destinations) do
-		local name = destination and destination.components.writeable and destination.components.writeable:GetText()
+		local name = destination.components.writeable and destination.components.writeable:GetText() or ""
 		local cost_hunger = min_hunger_cost
 		local cost_sanity = 0
 		local xi, yi, zi = self.inst.Transform:GetWorldPosition()
