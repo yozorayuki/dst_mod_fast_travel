@@ -6,7 +6,8 @@ PrefabFiles = {
 }
 
 local Ownership = GetModConfigData("Ownership")
-local Travel_Cost = GetModConfigData("Travel_Cost")
+GLOBAL.TRAVEL_HUNGER_COST = GetModConfigData("Hunger_Cost")
+GLOBAL.TRAVEL_SANITY_COST = GetModConfigData("Sanity_Cost")
 
 local FT_Points = {
 	"homesign"
@@ -22,7 +23,6 @@ for k, v in pairs(FT_Points) do
 			if GLOBAL.TheWorld.ismastersim then
 				inst:RemoveTag("_travelable")
 				inst:AddComponent("travelable")
-				inst.components.travelable.dist_cost = Travel_Cost
 				inst.components.travelable.ownership = Ownership
 			end
 		end

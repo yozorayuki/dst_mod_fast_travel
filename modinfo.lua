@@ -11,24 +11,39 @@ icon_atlas = "modicon.xml"
 icon = "modicon.tex"
 
 dst_compatible = true
-
 client_only_mod = false
 all_clients_require_mod = true
+
 server_filter_tags = {"fast travel"}
 
 priority = 0.1
 
 configuration_options = {
     {
-        name = "Travel_Cost",
-        label = "Travel Cost",
+        name = "Hunger_Cost",
+        label = "Hunger Cost",
         options = {
-            {description = "X0.25", data = 128},
-            {description = "X0.5", data = 64},
-            {description = "X1.0", data = 32},
-            {description = "X1.5", data = 21.3}
+            {description = "No Cost", data = 0},
+            {description = "X0.25", data = 0.25},
+            {description = "X0.5", data = 0.5},
+            {description = "X1.0", data = 1},
+            {description = "X1.5", data = 1.5},
+            {description = "X2.0", data = 2}
         },
-        default = 32
+        default = 1
+    },
+    {
+        name = "Sanity_Cost",
+        label = "Sanity Cost",
+        options = {
+            {description = "No Cost", data = 0},
+            {description = "X0.25", data = 0.25},
+            {description = "X0.5", data = 0.5},
+            {description = "X1.0", data = 1},
+            {description = "X1.5", data = 1.5},
+            {description = "X2.0", data = 2}
+        },
+        default = 1
     },
     {
         name = "Ownership",

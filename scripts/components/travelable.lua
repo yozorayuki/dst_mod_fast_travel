@@ -169,7 +169,7 @@ function Travelable:MakeInfos()
 		local xf, yf, zf = destination.Transform:GetWorldPosition()
 		local dist = math.sqrt((xi - xf) ^ 2 + (zi - zf) ^ 2)
 
-		cost_hunger = cost_hunger + math.ceil(dist / self.dist_cost)
+		cost_hunger = cost_hunger + dist / self.dist_cost
 		cost_sanity = cost_hunger * sanity_cost_ratio
 		if TheWorld.state.season == "winter" then
 			cost_sanity = cost_sanity * 1.25
@@ -177,9 +177,12 @@ function Travelable:MakeInfos()
 			cost_sanity = cost_sanity * 0.75
 		end
 
+		cost_hunger = math.ceil(cost_hunger * TRAVEL_HUNGER_COST)
+		cost_sanity = math.ceil(cost_sanity * TRAVEL_SANITY_COST)
+
 		if destination == self.inst then
-			cost_hunger = 0
-			cost_sanity = 0
+			cost_hunger = -1
+			cost_sanity = -1
 		end
 
 		infos = infos .. (infos == "" and "" or "\n") .. i .. "\t" .. name .. "\t" .. cost_hunger .. "\t" .. cost_sanity
@@ -207,7 +210,7 @@ function Travelable:Travel(traveller, index)
 		if destination and destination.components.travelable then
 			table.insert(self.travellers, traveller)
 
-			cost_hunger = cost_hunger + math.ceil(dist / self.dist_cost)
+			cost_hunger = cost_hunger + dist / self.dist_cost
 			cost_sanity = cost_hunger * sanity_cost_ratio
 			if TheWorld.state.season == "winter" then
 				cost_sanity = cost_sanity * 1.25
@@ -215,7 +218,10 @@ function Travelable:Travel(traveller, index)
 				cost_sanity = cost_sanity * 0.75
 			end
 
-			information = "To: " .. description .. " (" .. string.format("%.0f", self.site) .. "/" .. string.format("%.0f", self.totalsites) .. ")" .. "\n" .. "Hunger Cost: " .. string.format("%.0f", cost_hunger) .. "\n" .. "Sanity Cost: " .. string.format("%.1f", cost_sanity)
+			cost_hunger = math.ceil(cost_hunger * TRAVEL_HUNGER_COST)
+			cost_sanity = math.ceil(cost_sanity * TRAVEL_SANITY_COST)
+
+			information = string.format("To: %s (%d/%d)\nHunger Cost: %.0f\nSanity Cost: %.1f", description, self.site, self.totalsites, cost_hunger, cost_sanity)
 			if comment then
 				comment:Say(string.format(information), 3)
 			elseif talk then

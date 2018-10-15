@@ -67,8 +67,6 @@ local TravelScreen =
         self.current:SetPosition(0, 250, 0)
         self.current:SetRegionSize(350, 50)
         self.current:SetHAlign(ANCHOR_MIDDLE)
-        self.current:SetString("Unknow")
-        self.current:SetColour(1, 0, 0, 0.4)
 
         self.cancelbutton =
             self.destspanel:AddChild(
@@ -100,8 +98,8 @@ function TravelScreen:LoadDests()
             if info.name == "~nil" then
                 info.name = nil
             end
-            info.cost_hunger = tonumber(elements[3]) or -1
-            info.cost_sanity = tonumber(elements[4]) or -1
+            info.cost_hunger = tonumber(elements[3]) or -2
+            info.cost_sanity = tonumber(elements[4]) or -2
             table.insert(self.dest_infos, info)
         else
             print("data error:\n", info_pack)
@@ -247,9 +245,9 @@ function TravelScreen:DestListItem()
         dest.cost_sanity:SetString("sanity: " .. math.ceil(info.cost_sanity))
         dest.cost_sanity:SetColour(1, 1, 1, 0.8)
 
-        if info.cost_hunger <= 0 or info.cost_sanity <= 0 then
+        if info.cost_hunger < 0 or info.cost_sanity < 0 then
             dest.backing:SetOnClick(nil)
-            if info.cost_hunger < 0 or info.cost_sanity < 0 then
+            if info.cost_hunger < -1 or info.cost_sanity < -1 then
                 dest.name:SetColour(1, 0, 0, 0.4)
                 dest.cost_hunger:SetColour(1, 0, 0, 0.4)
                 dest.cost_sanity:SetColour(1, 0, 0, 0.4)
@@ -262,6 +260,9 @@ function TravelScreen:DestListItem()
                 if info.name and info.name ~= "" then
                     self.current:SetString(info.name)
                     self.current:SetColour(1, 1, 1, 1)
+                else
+                    self.current:SetString("Unknow")
+                    self.current:SetColour(1, 0, 0, 0.4)
                 end
             end
         else
