@@ -218,8 +218,8 @@ function Travelable:Travel(traveller, index)
 				cost_sanity = cost_sanity * 0.75
 			end
 
-			cost_hunger = math.ceil(cost_hunger * TRAVEL_HUNGER_COST)
-			cost_sanity = math.ceil(cost_sanity * TRAVEL_SANITY_COST)
+			cost_hunger = cost_hunger * TRAVEL_HUNGER_COST
+			cost_sanity = cost_sanity * TRAVEL_SANITY_COST
 
 			information = string.format("To: %s (%d/%d)\nHunger Cost: %.0f\nSanity Cost: %.1f", description, self.site, self.totalsites, cost_hunger, cost_sanity)
 			if comment then
