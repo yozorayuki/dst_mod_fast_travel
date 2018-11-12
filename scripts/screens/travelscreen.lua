@@ -82,6 +82,7 @@ local TravelScreen =
 
         self:LoadDests()
         self:Show()
+        self.default_focus = self.dests_scroll_list
         self.isopen = true
     end
 )
@@ -178,7 +179,6 @@ function TravelScreen:RefreshDests()
         )
 
         self.dests_scroll_list:SetPosition(0, 0)
-        self.destspanel.focus_forward = self.dests_scroll_list
 
         self.dests_scroll_list:SetFocusChangeDir(MOVE_DOWN, self.cancelbutton)
         self.cancelbutton:SetFocusChangeDir(MOVE_UP, self.dests_scroll_list)
