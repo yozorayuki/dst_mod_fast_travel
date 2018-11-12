@@ -1,6 +1,6 @@
 name = "Fast Travel (with ui)"
 author = "SoraYuki"
-version = "1.04"
+version = "1.05"
 description = "version " .. version .. "\nBuild a fast travel network and travel instantly from sign post to sign post."
 
 forumthread = ""
