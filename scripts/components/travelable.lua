@@ -244,7 +244,9 @@ function Travelable:Travel(traveller, index)
 							if comment then
 								comment:Say("We don't ship dead bodies.")
 							end
-						elseif not who:IsNear(self.inst, 10) then
+						elseif not (who:IsValid() and self.inst:IsValid() 
+									and who:IsNear(self.inst, 10)) then
+							print("player/sign is invalid, or they are far from each other.")
 						elseif IsNearDanger(who) then
 							if talk then
 								talk:Say("It's not safe to travel.")
