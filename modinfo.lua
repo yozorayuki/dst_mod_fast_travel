@@ -1,7 +1,8 @@
-name = "Fast Travel (with ui)"
+name = "Fast Travel (GUI)"
 author = "SoraYuki"
-version = "1.05"
-description = "version " .. version .. "\nBuild a fast travel network and travel instantly from sign post to sign post."
+version = "1.06"
+description = "version " .. version ..
+                  "\nBuild a fast travel network and travel instantly from sign post to sign post."
 
 forumthread = ""
 
@@ -25,27 +26,21 @@ configuration_options = {
         options = {
             {description = "No Cost", data = 0},
             {description = "X0.25", data = 0.25},
-            {description = "X0.5", data = 0.5},
-            {description = "X1.0", data = 1},
-            {description = "X1.5", data = 1.5},
-            {description = "X2.0", data = 2}
+            {description = "X1.0", data = 1}, {description = "X2.0", data = 2},
+            {description = "X4.0", data = 4}, {description = "X8.0", data = 8}
         },
         default = 1
-    },
-    {
+    }, {
         name = "Sanity_Cost",
         label = "Sanity Cost",
         options = {
             {description = "No Cost", data = 0},
             {description = "X0.25", data = 0.25},
-            {description = "X0.5", data = 0.5},
-            {description = "X1.0", data = 1},
-            {description = "X1.5", data = 1.5},
-            {description = "X2.0", data = 2}
+            {description = "X1.0", data = 1}, {description = "X2.0", data = 2},
+            {description = "X4.0", data = 4}, {description = "X8.0", data = 8}
         },
         default = 1
-    },
-    {
+    }, {
         name = "Ownership",
         label = "Ownership Restriction?",
         options = {

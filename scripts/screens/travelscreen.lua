@@ -5,90 +5,69 @@ local Text = require "widgets/text"
 local TEMPLATES = require "widgets/redux/templates"
 local ScrollableList = require "widgets/scrollablelist"
 
-local TravelScreen =
-    Class(
-    Screen,
-    function(self, owner, attach)
-        Screen._ctor(self, "TravelSelector")
+local TravelScreen = Class(Screen, function(self, owner, attach)
+    Screen._ctor(self, "TravelSelector")
 
-        self.owner = owner
-        self.attach = attach
+    self.owner = owner
+    self.attach = attach
 
-        self.isopen = false
+    self.isopen = false
 
-        self._scrnw, self._scrnh = TheSim:GetScreenSize()
+    self._scrnw, self._scrnh = TheSim:GetScreenSize()
 
-        self:SetScaleMode(SCALEMODE_PROPORTIONAL)
-        self:SetMaxPropUpscale(MAX_HUD_SCALE)
-        self:SetPosition(0, 0, 0)
-        self:SetVAnchor(ANCHOR_MIDDLE)
-        self:SetHAnchor(ANCHOR_MIDDLE)
+    self:SetScaleMode(SCALEMODE_PROPORTIONAL)
+    self:SetMaxPropUpscale(MAX_HUD_SCALE)
+    self:SetPosition(0, 0, 0)
+    self:SetVAnchor(ANCHOR_MIDDLE)
+    self:SetHAnchor(ANCHOR_MIDDLE)
 
-        self.scalingroot = self:AddChild(Widget("travelablewidgetscalingroot"))
-        self.scalingroot:SetScale(TheFrontEnd:GetHUDScale())
+    self.scalingroot = self:AddChild(Widget("travelablewidgetscalingroot"))
+    self.scalingroot:SetScale(TheFrontEnd:GetHUDScale())
 
-        self.inst:ListenForEvent(
-            "continuefrompause",
-            function()
-                if self.isopen then
-                    self.scalingroot:SetScale(TheFrontEnd:GetHUDScale())
-                end
-            end,
-            TheWorld
-        )
-        self.inst:ListenForEvent(
-            "refreshhudsize",
-            function(hud, scale)
-                if self.isopen then
-                    self.scalingroot:SetScale(scale)
-                end
-            end,
-            owner.HUD.inst
-        )
-
-        self.root = self.scalingroot:AddChild(TEMPLATES.ScreenRoot("root"))
-
-        -- secretly this thing is a modal Screen, it just LOOKS like a widget
-        self.black = self.root:AddChild(Image("images/global.xml", "square.tex"))
-        self.black:SetVRegPoint(ANCHOR_MIDDLE)
-        self.black:SetHRegPoint(ANCHOR_MIDDLE)
-        self.black:SetVAnchor(ANCHOR_MIDDLE)
-        self.black:SetHAnchor(ANCHOR_MIDDLE)
-        self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
-        self.black:SetTint(0, 0, 0, 0)
-        self.black.OnMouseButton = function()
-            self:OnCancel()
+    self.inst:ListenForEvent("continuefrompause", function()
+        if self.isopen then
+            self.scalingroot:SetScale(TheFrontEnd:GetHUDScale())
         end
+    end, TheWorld)
+    self.inst:ListenForEvent("refreshhudsize", function(hud, scale)
+        if self.isopen then self.scalingroot:SetScale(scale) end
+    end, owner.HUD.inst)
 
-        self.destspanel = self.root:AddChild(TEMPLATES.RectangleWindow(350, 550))
-        self.destspanel:SetPosition(0, 25)
+    self.root = self.scalingroot:AddChild(TEMPLATES.ScreenRoot("root"))
 
-        self.current = self.destspanel:AddChild(Text(BODYTEXTFONT, 35))
-        self.current:SetPosition(0, 250, 0)
-        self.current:SetRegionSize(350, 50)
-        self.current:SetHAlign(ANCHOR_MIDDLE)
+    -- secretly this thing is a modal Screen, it just LOOKS like a widget
+    self.black = self.root:AddChild(Image("images/global.xml", "square.tex"))
+    self.black:SetVRegPoint(ANCHOR_MIDDLE)
+    self.black:SetHRegPoint(ANCHOR_MIDDLE)
+    self.black:SetVAnchor(ANCHOR_MIDDLE)
+    self.black:SetHAnchor(ANCHOR_MIDDLE)
+    self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
+    self.black:SetTint(0, 0, 0, 0)
+    self.black.OnMouseButton = function() self:OnCancel() end
 
-        self.cancelbutton =
-            self.destspanel:AddChild(
-            TEMPLATES.StandardButton(
-                function()
-                    self:OnCancel()
-                end,
-                "Cancel",
-                {120, 40}
-            )
-        )
-        self.cancelbutton:SetPosition(0, -250)
+    self.destspanel = self.root:AddChild(TEMPLATES.RectangleWindow(350, 550))
+    self.destspanel:SetPosition(0, 25)
 
-        self:LoadDests()
-        self:Show()
-        self.default_focus = self.dests_scroll_list
-        self.isopen = true
-    end
-)
+    self.current = self.destspanel:AddChild(Text(BODYTEXTFONT, 35))
+    self.current:SetPosition(0, 250, 0)
+    self.current:SetRegionSize(350, 50)
+    self.current:SetHAlign(ANCHOR_MIDDLE)
+
+    self.cancelbutton = self.destspanel:AddChild(
+                            TEMPLATES.StandardButton(
+                                function() self:OnCancel() end, "Cancel",
+                                {120, 40}))
+    self.cancelbutton:SetPosition(0, -250)
+
+    self:LoadDests()
+    self:Show()
+    self.default_focus = self.dests_scroll_list
+    self.isopen = true
+end)
 
 function TravelScreen:LoadDests()
-    local info_pack = self.attach.replica.travelable and self.attach.replica.travelable:GetDestInfos()
+    local info_pack = self.attach.replica.travelable and
+                          self.attach.replica.travelable:GetDestInfos()
     self.dest_infos = {}
     for i, v in ipairs(string.split(info_pack, "\n")) do
         local elements = string.split(v, "\t")
@@ -96,9 +75,7 @@ function TravelScreen:LoadDests()
             local info = {}
             info.index = i
             info.name = elements[2]
-            if info.name == "~nil" then
-                info.name = nil
-            end
+            if info.name == "~nil" then info.name = nil end
             info.cost_hunger = tonumber(elements[3]) or -2
             info.cost_sanity = tonumber(elements[4]) or -2
             table.insert(self.dest_infos, info)
@@ -116,10 +93,7 @@ end
 function TravelScreen:RefreshDests()
     self.destwidgets = {}
     for i, v in ipairs(self.dest_infos) do
-        local data = {
-            index = i,
-            info = v
-        }
+        local data = {index = i, info = v}
 
         table.insert(self.destwidgets, data)
     end
@@ -127,11 +101,9 @@ function TravelScreen:RefreshDests()
     local function ScrollWidgetsCtor(context, index)
         local widget = Widget("widget-" .. index)
 
-        widget:SetOnGainFocus(
-            function()
-                self.dests_scroll_list:OnWidgetFocus(widget)
-            end
-        )
+        widget:SetOnGainFocus(function()
+            self.dests_scroll_list:OnWidgetFocus(widget)
+        end)
 
         widget.destitem = widget:AddChild(self:DestListItem())
         local dest = widget.destitem
@@ -158,25 +130,20 @@ function TravelScreen:RefreshDests()
     end
 
     if not self.dests_scroll_list then
-        self.dests_scroll_list =
-            self.destspanel:AddChild(
-            TEMPLATES.ScrollingGrid(
-                self.destwidgets,
-                {
-                    context = {},
-                    widget_width = 350,
-                    widget_height = 90,
-                    num_visible_rows = 5,
-                    num_columns = 1,
-                    item_ctor_fn = ScrollWidgetsCtor,
-                    apply_fn = ApplyDataToWidget,
-                    scrollbar_offset = 10,
-                    scrollbar_height_offset = -60,
-                    peek_percent = 0, -- may init with few clientmods, but have many servermods.
-                    allow_bottom_empty_row = true -- it's hidden anyway
-                }
-            )
-        )
+        self.dests_scroll_list = self.destspanel:AddChild(
+                                     TEMPLATES.ScrollingGrid(self.destwidgets, {
+                context = {},
+                widget_width = 350,
+                widget_height = 90,
+                num_visible_rows = 5,
+                num_columns = 1,
+                item_ctor_fn = ScrollWidgetsCtor,
+                apply_fn = ApplyDataToWidget,
+                scrollbar_offset = 10,
+                scrollbar_height_offset = -60,
+                peek_percent = 0, -- may init with few clientmods, but have many servermods.
+                allow_bottom_empty_row = true -- it's hidden anyway
+            }))
 
         self.dests_scroll_list:SetPosition(0, 0)
 
@@ -189,15 +156,9 @@ function TravelScreen:DestListItem()
     local dest = Widget("destination")
 
     local item_width, item_height = 340, 90
-    dest.backing =
-        dest:AddChild(
-        TEMPLATES.ListItemBackground(
-            item_width,
-            item_height,
-            function()
-            end
-        )
-    )
+    dest.backing = dest:AddChild(TEMPLATES.ListItemBackground(item_width,
+                                                              item_height,
+                                                              function() end))
     dest.backing.move_on_click = true
 
     dest.name = dest:AddChild(Text(BODYTEXTFONT, 35))
@@ -266,11 +227,9 @@ function TravelScreen:DestListItem()
                 end
             end
         else
-            dest.backing:SetOnClick(
-                function()
-                    self:Travel(info.index)
-                end
-            )
+            dest.backing:SetOnClick(function()
+                self:Travel(info.index)
+            end)
         end
     end
 
@@ -279,35 +238,25 @@ function TravelScreen:DestListItem()
 end
 
 function TravelScreen:Travel(index)
-    if not self.isopen then
-        return
-    end
+    if not self.isopen then return end
 
     local travelable = self.attach.replica.travelable
-    if travelable then
-        travelable:Travel(self.owner, index)
-    end
+    if travelable then travelable:Travel(self.owner, index) end
 
     self.owner.HUD:CloseTravelScreen()
 end
 
 function TravelScreen:OnCancel()
-    if not self.isopen then
-        return
-    end
+    if not self.isopen then return end
 
     local travelable = self.attach.replica.travelable
-    if travelable then
-        travelable:Travel(self.owner, nil)
-    end
+    if travelable then travelable:Travel(self.owner, nil) end
 
     self.owner.HUD:CloseTravelScreen()
 end
 
 function TravelScreen:OnControl(control, down)
-    if TravelScreen._base.OnControl(self, control, down) then
-        return true
-    end
+    if TravelScreen._base.OnControl(self, control, down) then return true end
 
     if not down then
         if control == CONTROL_OPEN_DEBUG_CONSOLE then
@@ -324,12 +273,7 @@ function TravelScreen:Close()
         self.black:Kill()
         self.isopen = false
 
-        self.inst:DoTaskInTime(
-            .2,
-            function()
-                TheFrontEnd:PopScreen(self)
-            end
-        )
+        self.inst:DoTaskInTime(.2, function() TheFrontEnd:PopScreen(self) end)
     end
 end
 

@@ -1,11 +1,8 @@
 --------------------------------------------------------------------------
---Client interface
+-- Client interface
 --------------------------------------------------------------------------
-
 local function OnRemoveEntity(inst)
-    if inst._parent ~= nil then
-        inst._parent.travelable_classified = nil
-    end
+    if inst._parent ~= nil then inst._parent.travelable_classified = nil end
 end
 
 local function OnEntityReplicated(inst)
@@ -26,7 +23,7 @@ local function fn()
     local inst = CreateEntity()
 
     if TheWorld.ismastersim then
-        inst.entity:AddTransform() --So we can follow parent's sleep state
+        inst.entity:AddTransform() -- So we can follow parent's sleep state
     end
     inst.entity:AddNetwork()
     inst.entity:Hide()
@@ -35,7 +32,7 @@ local function fn()
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
-        --Client interface
+        -- Client interface
         inst.OnEntityReplicated = OnEntityReplicated
 
         return inst
